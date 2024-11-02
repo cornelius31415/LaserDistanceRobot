@@ -3,10 +3,6 @@
 #include <Wire.h>
 #include <Adafruit_VL53L0X.h>
 
-// declaring the pins for the echo and the trigger
-const int echopin = 13;
-const int trigpin = 2;
-
 
 // Creating motor objects
 AF_DCMotor motor1(1);  
@@ -19,7 +15,6 @@ Adafruit_VL53L0X distanceSensor = Adafruit_VL53L0X();
 
 uint8_t robotSpeed = 180;
 int laserDistance;
-float distance;
 uint8_t criticalDistance = 500;
 
 // -------------------------------------------------------------------------------------
@@ -27,8 +22,8 @@ uint8_t criticalDistance = 500;
 // -------------------------------------------------------------------------------------
 
 void setup() {
-Serial.begin(115200);         // high baudrate because lots of info coming from that sensor
-distanceSensor.begin();
+ Serial.begin(115200);         // high baudrate because lots of info coming from that sensor
+  distanceSensor.begin();
   setupMotors();
 
   
@@ -41,14 +36,14 @@ distanceSensor.begin();
 void loop() {
  
   moveForward();
-  distance = measureDistanceLaser();
+  laserDistance = measureDistanceLaser();
   
   Serial.print("Measured Distance: ");
-  Serial.println(distance);  
+  Serial.println(laserDistance);  
   
   uint8_t randomNumber = random(1,254);
   
-  if (distance < criticalDistance && distance > 1 && isEven(randomNumber)) {
+  if (laserDistance < criticalDistance && laserDistance > 1 && isEven(randomNumber)) {
     // the idea of the following procedure is to help the robot not getting
     // stuck in narrow areas due to repeated low distance measurement
     // and non-stop turning when there is no space to turn
@@ -68,7 +63,7 @@ void loop() {
     
   }
   
-  if (distance < criticalDistance && distance > 1 && !isEven(randomNumber)) {
+  if (laserDistance < criticalDistance && laserDistance > 1 && !isEven(randomNumber)) {
     // same as before, just turning left this time
     
     releaseMotors();
@@ -172,7 +167,7 @@ void turnLeft() {
 }
 
 // -------------------------------------------------------------------------------------
-//                         PROCESSING ULTRA SOUND DATA
+//                              EVEN OR NOT THAT IS THE QUESTION
 // -------------------------------------------------------------------------------------
 
 
